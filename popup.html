@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Cookie Exporter</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      height: 100%;
+    }
+
+    body {
+      width: 520px;
+      min-height: 580px;
+      display: flex;
+      flex-direction: column;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 14px;
+      background: #111114;
+      color: #d4d4d8;
+    }
+
+    /* ── HEADER ── */
+    header {
+      padding: 14px 16px;
+      background: #18181c;
+      border-bottom: 1px solid #2a2a30;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    header h1 {
+      font-size: 15px;
+      font-weight: 700;
+      color: #ff8c42;
+      letter-spacing: 0.01em;
+    }
+
+    header span {
+      font-size: 12px;
+      color: #888;
+      margin-top: 6px;
+      display: block;
+    }
+
+    /* ── SECTION ── */
+    .section {
+      padding: 14px 16px;
+      border-bottom: 1px solid #2a2a30;
+    }
+
+    .url-display {
+      font-size: 15px;
+      color: #ffa85c;
+      font-weight: 600;
+      word-break: break-all;
+      margin-bottom: 12px;
+      line-height: 1.5;
+    }
+
+    /* ── FILTER BUTTONS ── */
+    .filters {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .filter-btn {
+      flex: 1;
+      padding: 6px 8px;
+      border: 1px solid #2a2a30;
+      border-radius: 5px;
+      background: #18181c;
+      color: #aaa;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 500;
+      text-align: center;
+      transition: all 0.15s;
+    }
+
+    .filter-btn.active {
+      border-color: #ff8c42;
+      color: #ff8c42;
+      background: rgba(255, 140, 66, 0.12);
+      font-weight: 600;
+    }
+
+    .filter-btn:hover:not(.active) {
+      border-color: #3a3a42;
+      color: #ccc;
+    }
+
+    /* ── BADGES ── */
+    .stats {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .badge {
+      padding: 3px 10px;
+      border-radius: 10px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+    }
+
+    .badge-total  { background: #222228; color: #ffa85c; }
+    .badge-http   { background: #1a2b1a; color: #7de0a0; }
+    .badge-secure { background: #2b2000; color: #ffcc77; }
+    .badge-both   { background: #2b1400; color: #ff9050; }
+
+    /* ── ACTIONS ── */
+    .actions {
+      display: flex;
+      gap: 8px;
+      padding: 12px 16px;
+    }
+
+    .btn {
+      flex: 1;
+      padding: 9px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.01em;
+      transition: background 0.15s, opacity 0.15s;
+    }
+
+    .btn-export, .btn-copy {
+      background: transparent;
+      color: #ff8c42;
+      border: 1.5px solid #ff8c42;
+    }
+
+    .btn-export:hover, .btn-copy:hover {
+      background: rgba(255, 140, 66, 0.14);
+    }
+
+    /* ── PREVIEW ── */
+    .preview-area {
+      padding: 0 16px 0;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    textarea {
+      width: 100%;
+      flex: 1;
+      min-height: 200px;
+      background: #0e0e12;
+      border: 1px solid #2a2a30;
+      border-radius: 6px;
+      color: #f0c090;
+      font-family: "Menlo", "Consolas", "Courier New", monospace;
+      font-size: 11px;
+      padding: 10px;
+      resize: none;
+      line-height: 1.65;
+    }
+
+    /* ── STATUS ── */
+    .status {
+      padding: 8px 16px;
+      font-size: 12px;
+      color: #7de0a0;
+      text-align: center;
+      height: 16px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .status.error { color: #ff8c42; }
+
+    /* ── TOAST ── */
+    #toast-container {
+      position: fixed;
+      bottom: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      pointer-events: none;
+    }
+
+    .toast {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 16px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 500;
+      white-space: nowrap;
+      max-width: 460px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+      pointer-events: auto;
+      animation: toast-in 0.25s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    }
+
+    .toast.hide {
+      animation: toast-out 0.2s ease-in forwards;
+    }
+
+    .toast-success {
+      background: #1a2b1a;
+      border: 1px solid #3a6b3a;
+      color: #7de0a0;
+    }
+
+    .toast-error {
+      background: #2b1400;
+      border: 1px solid #6b3a00;
+      color: #ff8c42;
+    }
+
+    .toast-icon {
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+
+    @keyframes toast-in {
+      from {
+        opacity: 0;
+        transform: translateY(12px) scale(0.95);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    @keyframes toast-out {
+      from {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+      to {
+        opacity: 0;
+        transform: translateY(8px) scale(0.95);
+      }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>🍪 Cookie Inspector Pro</h1>
+    <span>All cookies including HttpOnly and Secure</span>
+  </div>
+</header>
+
+<div class="section">
+  <div class="url-display" id="currentUrl">Loading...</div>
+
+  <div class="filters">
+    <div class="filter-btn active" data-filter="all">All cookies</div>
+    <div class="filter-btn" data-filter="httponly">HttpOnly</div>
+    <div class="filter-btn" data-filter="secure">Secure</div>
+    <div class="filter-btn" data-filter="both">Both flags</div>
+  </div>
+
+  <div class="stats" id="stats"></div>
+</div>
+
+<div class="actions">
+  <button class="btn btn-export" id="btnExport">⬇ Download JSON</button>
+  <button class="btn btn-copy" id="btnCopy">📋 Copy</button>
+</div>
+
+<div class="preview-area">
+  <textarea id="preview" readonly placeholder="Cookies will appear here..."></textarea>
+</div>
+
+<div class="status" id="status"></div>
+
+<div id="toast-container"></div>
+
+<script src="popup.js"></script>
+</body>
+</html>
