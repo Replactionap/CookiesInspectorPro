@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "Cookie Inspector Pro",
+  "name": "Cookies Inspector Pro",
   "version": "1.0.0",
   "description": "Small extension for export all cookies including httpOnly and secure to JSON",
 
@@ -29,7 +29,7 @@
 
   "action": {
     "default_popup": "popup.html",
-    "default_title": "Cookie Inspector Pro",
+    "default_title": "Cookies Inspector Pro",
     "default_icon": {
       "16": "icons/icon16.png",
       "32": "icons/icon32.png",
