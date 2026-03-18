@@ -163,6 +163,34 @@
       padding: 10px;
       resize: none;
       line-height: 1.65;
+
+      /* Firefox */
+      scrollbar-width: thin;
+      scrollbar-color: #3a3a44 #18181c;
+    }
+
+    /* Webkit (Chrome, Edge, Safari) */
+    textarea::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+
+    textarea::-webkit-scrollbar-track {
+      background: #18181c;
+      border-radius: 3px;
+    }
+
+    textarea::-webkit-scrollbar-thumb {
+      background: #3a3a44;
+      border-radius: 3px;
+    }
+
+    textarea::-webkit-scrollbar-thumb:hover {
+      background: #ff8c42;
+    }
+
+    textarea::-webkit-scrollbar-corner {
+      background: #18181c;
     }
 
     /* ── STATUS ── */
