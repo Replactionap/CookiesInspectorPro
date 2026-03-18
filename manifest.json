@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "Cookies Inspector Pro",
-  "version": "1.1.3",
-  "description": "Small extension for export all cookies including httpOnly and secure to JSON",
+  "version": "1.1.4",
+  "description": "Small extension for export all cookies including HttpOnly and Secure categories to JSON",
   "author": "Replaction",
   "homepage_url": "https://github.com/Replactionap/CookiesInspectorPro",
   "minimum_chrome_version": "125",
