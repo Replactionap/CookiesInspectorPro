@@ -13,6 +13,9 @@ async function init() {
 
     document.getElementById("currentUrl").textContent = `🌐 URL: ${currentHostname}`;
 
+    const { version } = browser.runtime.getManifest();
+    document.getElementById("versionBadge").textContent = `v${version}`;
+
     // browser.cookies.getAll with domain returns ALL cookies, including httpOnly and secure
     allCookies = await browser.cookies.getAll({ domain: currentHostname });
 
